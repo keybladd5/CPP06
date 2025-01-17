@@ -14,7 +14,7 @@ NAME = ScalarConverter
 
 #########
 RM = rm -rf
-CC = c++
+CC = g++
 CFLAGS = -g -Wall -Wextra -Werror -std=c++98 -fsanitize=address -pedantic 
 
 #########
