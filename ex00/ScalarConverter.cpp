@@ -12,58 +12,76 @@
 
 #include "ScalarConverter.hpp"
 
-//checker funcs to set the type data input
-
-
-//works
-bool checkInt(std::string const &input) // is the first check
+bool checkSpecial(std::string const &input)
 {
-	//ya sabemos que no esta vacio, asi que checkear que sea un integer implica solo tener numeros, como mucho un signo menos.
-	//asi que podemos chequear todos los caracteres del string, si encontramos un - tiramos pero sino false
+	if (!(input == "-inff" || input == "+inff" || input == "-inf" || input == "+inf" || input == "nan"))
+		return (false);
+	return (true);
+}
+
+bool checkInt(std::string const &input)
+{
 	for (std::string::const_iterator it = input.begin(); it != input.end(); it++)
 	{
-		if (!std::isdigit(*it)) //no es un numero
+		if (!std::isdigit(*it))
 		{
 			if (*it == '-' && it == input.begin())
-				continue;//es el signo de un integer negativo
+				continue;
 			else
-				return (false);//NO ES UN INTEGER
+				return (false);
 		}
 	}
-	std::cout << std::atol(input.c_str()) << std::endl;
-	if (std::atol(input.c_str()) > INT_MAX || std::atol(input.c_str()) < INT_MIN) // checkear los limites de rango de los integers por si algun flipao intentar romperlo
+	if (std::atol(input.c_str()) > INT_MAX || std::atol(input.c_str()) < INT_MIN)
 		return (false);
 	return (true);
 }
 
 
-bool checkDouble(std::string const &input) // second check
+bool checkDouble(std::string const &input)
 {
-	//ya se que no es un integer porque contiene cosas que no son numeros mas alla de '-' en posicion 0
-	//ahora solo puedo validar la excepcion anterior y otra mas, que en mitad de la sucesion de numeros contenga un '.' y nada mas.
+	char *end;
 	for (std::string::const_iterator it = input.begin(); it != input.end(); it++)
 	{
-		if (!std::isdigit(*it)) //no es un numero
+		if (!std::isdigit(*it))
 		{
-			if ((*it == '-' && it == input.begin()) 
-				continue;//es el signo de un integer negativo
-			else if (*it == '.' && it != input.begin() && it != input.end() && input.find(it, input.end(), '.') != )
+			if (*it == '-' && it == input.begin())
+				continue;
+			else if (*it == '.' && it != input.begin() && *it != input[input.size()-1] && std::strtod(input.c_str(), &end) != 0)
+				continue;
 			else
-				return (false);//NO ES UN INTEGER
+				return (false);
 		}
 	}
-	//no te puedes olvidar del check final sobre los limites de los doubles
+	return (true);
 }
 
-/*bool checkFloat(std::string const &input) // third check
+bool checkFloat(std::string const &input)
 {
-	
-}*/
+	char *end;
+	for (std::string::const_iterator it = input.begin(); it != input.end(); it++)
+	{
+		if (!std::isdigit(*it))
+		{
+			if (*it == '-' && it == input.begin())
+				continue;
+			else if (*it == '.' && it != input.begin() && *it != input[input.size()-1] && std::strtod(input.c_str(), &end) != 0)
+				continue;
+			else if (*it == 'f' && *it == input[input.size()-1])
+				continue;
+			else
+				return (false);
+		}
+	}
+	return (true);
+}
 
-bool checkChar(std::string const &input) //last check
+bool checkChar(std::string const &input)
 {
 		if (input.size() > 1)
 			return (false);
+		else if (!std::isprint(input[0]))
+			return (false);
+		return (true);
 }
 
 
@@ -72,12 +90,14 @@ char parse_type(std::string const &input)
 {
 	if (input.empty())
 		return('n');
+	else if (checkSpecial(input))
+		return ('s');
 	else if (checkInt(input))
 		return ('i');
 	else if (checkDouble(input))
 		return ('d');
-	/*else if (checkFloat(input))
-		return ('f');*/
+	else if (checkFloat(input))
+		return ('f');
 	else if (checkChar(input))
 		return ('c');
 	return ('n');
@@ -86,24 +106,27 @@ char parse_type(std::string const &input)
 
 //Convertor funcs, with type set, just will print the specific conversion in every funcs depending on the type
 
-/*void toChar(std::string const &input, char type)
+/*void isChar(char input)
 {
-	char c = input[0];//std::atoi(input.c_str());
-	std::cout << "Char: " << c << std::endl;
-	//std::setprecisicion(1);??
+	char *end;
+	std::cout << "Char: ";
+	if (type == 'c')
+		std::cout << "'" << input << "'";
+	else if ((type == 'f' || type == 'd' || type == 'i') && std::strtold(input.c_str(), &end) >= 32 && std::strtold(input.c_str(), &end) <= 126)
+		std::cout << static_cast<char>(input)
 }
 
-void toInt(std::string const &input, char type)
+void isInt(int input)
 {
 	std::cout << "Int: " << std::atoi(input.c_str()) << std::endl;
 }
 
-void toFloat(std::string const &input, char type)
+void isFloat(float input)
 {
 	std::cout << "Float: " << static_cast<float>(std::atof(input.c_str())) << std::endl;
 }
 
-void toDouble(std::string const &input, char type)
+void isDouble(double input)
 {
 	std::cout << "Double: " << static_cast<double>(std::atof(input.c_str())) << std::endl;
 }*/
@@ -112,11 +135,18 @@ void ScalarConverter::convert(std::string const &input)
 {
 	char type = parse_type(input);
 	std::cout << "el parser ha dado: " << type << std::endl;
-	//no hay que parsear nada en esta parte, llamar a todos los conversores porque queremos ver el string casteado a los siguientes 4 tipos de datos
-	//toChar(input, type);
-	//toInt(input), type;
-	//toFloat(input, type);
-	//toDouble(input, type);
+	if (type == 'c')
+		isChar(input[0]);
+	else if (type == 'i')
+		isInt(std::atoi(input.c_str()));
+	else if (type == 'f')
+		isFloat(std::atof(input.c_str()));
+	else if (type == 'd')
+		isDouble(std::atof(input.c_str()));
+	else if (type == 's')
+		isSpecial(input);
+	else
+		isNothing(input);
 }
 
 
