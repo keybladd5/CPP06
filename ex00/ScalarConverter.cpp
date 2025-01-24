@@ -27,8 +27,7 @@ bool checkInt(std::string const &input)
 		{
 			if (*it == '-' && it == input.begin())
 				continue;
-			else
-				return (false);
+			return (false);
 		}
 	}
 	if (std::atol(input.c_str()) > INT_MAX || std::atol(input.c_str()) < INT_MIN)
@@ -39,14 +38,14 @@ bool checkInt(std::string const &input)
 
 bool checkDouble(std::string const &input)
 {
-	char *end;
+	char *tmpPtr;
 	for (std::string::const_iterator it = input.begin(); it != input.end(); it++)
 	{
 		if (!std::isdigit(*it))
 		{
 			if (*it == '-' && it == input.begin())
 				continue;
-			else if (*it == '.' && it != input.begin() && *it != input[input.size()-1] && std::strtod(input.c_str(), &end) != 0)
+			else if (*it == '.' && it != input.begin() && *it != input[input.size()-1] && std::strtod(input.c_str(), &tmpPtr) != 0)
 				continue;
 			else
 				return (false);
@@ -57,14 +56,14 @@ bool checkDouble(std::string const &input)
 
 bool checkFloat(std::string const &input)
 {
-	char *end;
+	char *tmpPtr;
 	for (std::string::const_iterator it = input.begin(); it != input.end(); it++)
 	{
 		if (!std::isdigit(*it))
 		{
 			if (*it == '-' && it == input.begin())
 				continue;
-			else if (*it == '.' && it != input.begin() && *it != input[input.size()-1] && std::strtod(input.c_str(), &end) != 0)
+			else if (*it == '.' && it != input.begin() && *it != input[input.size()-1] && std::strtod(input.c_str(), &tmpPtr) != 0)
 				continue;
 			else if (*it == 'f' && *it == input[input.size()-1])
 				continue;
@@ -106,30 +105,52 @@ char parse_type(std::string const &input)
 
 //Convertor funcs, with type set, just will print the specific conversion in every funcs depending on the type
 
-/*void isChar(char input)
+void isChar(char input)
 {
-	char *end;
-	std::cout << "Char: ";
-	if (type == 'c')
-		std::cout << "'" << input << "'";
-	else if ((type == 'f' || type == 'd' || type == 'i') && std::strtold(input.c_str(), &end) >= 32 && std::strtold(input.c_str(), &end) <= 126)
-		std::cout << static_cast<char>(input)
+	std::cout << "Char: '" << input << "'"<<std::endl;
+	std::cout << "Int: " << static_cast<int>(input) << std::endl;
+	std::cout << "Float: " << static_cast<float>(input) << "f" << std::endl;
+	std::cout << "Double: " << static_cast<double>(input) << ".00" << std::endl;
 }
 
 void isInt(int input)
 {
-	std::cout << "Int: " << std::atoi(input.c_str()) << std::endl;
+	if (std::isprint(input))
+		std::cout << "Char: '" << static_cast<char>(input) << "'"<<std::endl;
+	else
+		std::cout << "Char: Non displayable"<<std::endl;
+	std::cout << "Int: " << input << std::endl;
+	std::cout << "Float: " << static_cast<float>(input) << "f" << std::endl;
+	std::cout << "Double: " << static_cast<double>(input) << ".00" << std::endl;
 }
 
 void isFloat(float input)
 {
-	std::cout << "Float: " << static_cast<float>(std::atof(input.c_str())) << std::endl;
+	if (std::isprint(input))
+		std::cout << "Char: '" << static_cast<char>(input) << "'"<<std::endl;
+	else
+		std::cout << "Char: Non displayable"<<std::endl;
+	std::cout << "Int: " << static_cast<int>(input) << std::endl;
+	std::cout << "Float: " << input << "f" << std::endl;
+	std::cout << "Double: " << static_cast<double>(input) << ".00" << std::endl;
 }
 
-void isDouble(double input)
+/*void isDouble(double input)
 {
 	std::cout << "Double: " << static_cast<double>(std::atof(input.c_str())) << std::endl;
+}
+
+void isSpecial(std::string const &input)
+{
 }*/
+
+void isNothing(void)
+{
+	std::cout << "Char: impossible" << std::endl;
+	std::cout << "Int: impossible" << std::endl;
+	std::cout << "Float: impossible" << std::endl;
+	std::cout << "Double: impossible" << std::endl;
+}
 
 void ScalarConverter::convert(std::string const &input)
 {
@@ -141,12 +162,12 @@ void ScalarConverter::convert(std::string const &input)
 		isInt(std::atoi(input.c_str()));
 	else if (type == 'f')
 		isFloat(std::atof(input.c_str()));
-	else if (type == 'd')
-		isDouble(std::atof(input.c_str()));
-	else if (type == 's')
-		isSpecial(input);
+	//else if (type == 'd')
+	//	isDouble(std::atof(input.c_str()));
+	//else if (type == 's')
+	//	isSpecial(input);*/
 	else
-		isNothing(input);
+		isNothing();
 }
 
 
