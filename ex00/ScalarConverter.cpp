@@ -14,7 +14,7 @@
 
 bool checkSpecial(std::string const &input)
 {
-	if (!(input == "-inff" || input == "+inff" || input == "-inf" || input == "+inf" || input == "nan"))
+	if (!(input == "-inff" || input == "+inff" || input == "-inf" || input == "+inf" || input == "nan" || input == "nanf"))
 		return (false);
 	return (true);
 }
@@ -83,8 +83,6 @@ bool checkChar(std::string const &input)
 		return (true);
 }
 
-
-
 char parse_type(std::string const &input)
 {
 	if (input.empty())
@@ -126,23 +124,48 @@ void isInt(int input)
 
 void isFloat(float input)
 {
-	if (std::isprint(input))
+	if (input >= 32 && input <= 126)
 		std::cout << "Char: '" << static_cast<char>(input) << "'"<<std::endl;
 	else
 		std::cout << "Char: Non displayable"<<std::endl;
 	std::cout << "Int: " << static_cast<int>(input) << std::endl;
-	std::cout << "Float: " << input << "f" << std::endl;
-	std::cout << "Double: " << static_cast<double>(input) << ".00" << std::endl;
+	if (std::floor(input) != input)
+	{
+		std::cout << "Float: " << input << "f" << std::endl;
+		std::cout << "Double: " << static_cast<double>(input) << std::endl;
+	}
+	else
+	{
+		std::cout << "Float: " << input << ".0f" << std::endl;
+		std::cout << "Double: " << static_cast<double>(input) << ".00" << std::endl;
+	}
 }
 
-/*void isDouble(double input)
+void isDouble(double input)
 {
-	std::cout << "Double: " << static_cast<double>(std::atof(input.c_str())) << std::endl;
+	if (input >= 32 && input <= 126)
+		std::cout << "Char: '" << static_cast<char>(input) << "'"<<std::endl;
+	else
+		std::cout << "Char: Non displayable"<<std::endl;
+	std::cout << "Int: " << static_cast<int>(input) << std::endl;
+	std::cout << "Float: " << static_cast<float>(input) << "f" << std::endl;
+	std::cout << "Double: " << input << std::endl;
 }
 
 void isSpecial(std::string const &input)
 {
-}*/
+	std::cout << "Char: impossible" << std::endl;
+	std::cout << "Int: impossible" << std::endl;
+	if (input == "+inf" || input == "-inf" || input == "nan")
+		std::cout << "Float: " << input << "f" << std::endl;
+	else
+		std::cout << "Float: " << input << std::endl;
+	if (input == "+inff" || input == "-inff" || input == "nanf")
+		std::cout << "Double: " << input.substr(0, input.size()-1) << std::endl;
+	else
+		std::cout << "Double: " << input << std::endl;
+
+}
 
 void isNothing(void)
 {
@@ -162,17 +185,10 @@ void ScalarConverter::convert(std::string const &input)
 		isInt(std::atoi(input.c_str()));
 	else if (type == 'f')
 		isFloat(std::atof(input.c_str()));
-	//else if (type == 'd')
-	//	isDouble(std::atof(input.c_str()));
-	//else if (type == 's')
-	//	isSpecial(input);*/
+	else if (type == 'd')
+		isDouble(std::atof(input.c_str()));
+	else if (type == 's')
+		isSpecial(input);
 	else
 		isNothing();
 }
-
-
-/*Examples of int literals: 0, -42, 42...
-Examples of float literals: 0.0f, -4.2f, 4.2f...
-You have to handle these pseudo literals as well (you know, for science): -inff, +inff and nanf
-Examples of double literals: 0.0, -4.2, 4.2...
-You have to handle these pseudo literals as well (you know, for fun): -inf, +inf and nan*/

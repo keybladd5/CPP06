@@ -19,7 +19,6 @@ int main (int argc, char** argv)
 		std::cout << "Format should be -> ./ScalarConverter \"string\"" << std::endl;
 		return (1);
 	}
-	std::cout << "SUPER CONVERSOR OUTPUT\n";
 	ScalarConverter::convert(argv[1]);
 	return (0);
 }
