@@ -12,14 +12,14 @@
 
 #include "ScalarConverter.hpp"
 
-bool checkSpecial(std::string const &input)
+static bool checkSpecial(std::string const &input)
 {
 	if (!(input == "-inff" || input == "+inff" || input == "-inf" || input == "+inf" || input == "nan" || input == "nanf"))
 		return (false);
 	return (true);
 }
 
-bool checkInt(std::string const &input)
+static bool checkInt(std::string const &input)
 {
 	for (std::string::const_iterator it = input.begin(); it != input.end(); it++)
 	{
@@ -35,8 +35,7 @@ bool checkInt(std::string const &input)
 	return (true);
 }
 
-
-bool checkDouble(std::string const &input)
+static bool checkDouble(std::string const &input)
 {
 	char *tmpPtr;
 	for (std::string::const_iterator it = input.begin(); it != input.end(); it++)
@@ -54,7 +53,7 @@ bool checkDouble(std::string const &input)
 	return (true);
 }
 
-bool checkFloat(std::string const &input)
+static bool checkFloat(std::string const &input)
 {
 	char *tmpPtr;
 	for (std::string::const_iterator it = input.begin(); it != input.end(); it++)
@@ -74,7 +73,7 @@ bool checkFloat(std::string const &input)
 	return (true);
 }
 
-bool checkChar(std::string const &input)
+static bool checkChar(std::string const &input)
 {
 		if (input.size() > 1)
 			return (false);
@@ -83,7 +82,7 @@ bool checkChar(std::string const &input)
 		return (true);
 }
 
-char parse_type(std::string const &input)
+static char parse_type(std::string const &input)
 {
 	if (input.empty())
 		return('n');
@@ -100,10 +99,7 @@ char parse_type(std::string const &input)
 	return ('n');
 }
 
-
-//Convertor funcs, with type set, just will print the specific conversion in every funcs depending on the type
-
-void isChar(char input)
+static void isChar(char input)
 {
 	std::cout << "Char: '" << input << "'"<<std::endl;
 	std::cout << "Int: " << static_cast<int>(input) << std::endl;
@@ -111,7 +107,7 @@ void isChar(char input)
 	std::cout << "Double: " << static_cast<double>(input) << ".00" << std::endl;
 }
 
-void isInt(int input)
+static void isInt(int input)
 {
 	if (std::isprint(input))
 		std::cout << "Char: '" << static_cast<char>(input) << "'"<<std::endl;
@@ -122,7 +118,7 @@ void isInt(int input)
 	std::cout << "Double: " << static_cast<double>(input) << ".00" << std::endl;
 }
 
-void isFloat(float input)
+static void isFloat(float input)
 {
 	if (input >= 32 && input <= 126)
 		std::cout << "Char: '" << static_cast<char>(input) << "'"<<std::endl;
@@ -141,18 +137,26 @@ void isFloat(float input)
 	}
 }
 
-void isDouble(double input)
+static void isDouble(double input)
 {
 	if (input >= 32 && input <= 126)
 		std::cout << "Char: '" << static_cast<char>(input) << "'"<<std::endl;
 	else
 		std::cout << "Char: Non displayable"<<std::endl;
 	std::cout << "Int: " << static_cast<int>(input) << std::endl;
-	std::cout << "Float: " << static_cast<float>(input) << "f" << std::endl;
-	std::cout << "Double: " << input << std::endl;
+		if (std::floor(input) != input)
+	{
+		std::cout << "Float: " << static_cast<double>(input) << "f" << std::endl;
+		std::cout << "Double: " << input << std::endl;
+	}
+	else
+	{
+		std::cout << "Float: " << static_cast<float>(input) << ".0f" << std::endl;
+		std::cout << "Double: " << input << ".00" << std::endl;
+	}
 }
 
-void isSpecial(std::string const &input)
+static void isSpecial(std::string const &input)
 {
 	std::cout << "Char: impossible" << std::endl;
 	std::cout << "Int: impossible" << std::endl;
@@ -167,7 +171,7 @@ void isSpecial(std::string const &input)
 
 }
 
-void isNothing(void)
+static void isNothing(void)
 {
 	std::cout << "Char: impossible" << std::endl;
 	std::cout << "Int: impossible" << std::endl;
@@ -178,7 +182,6 @@ void isNothing(void)
 void ScalarConverter::convert(std::string const &input)
 {
 	char type = parse_type(input);
-	std::cout << "el parser ha dado: " << type << std::endl;
 	if (type == 'c')
 		isChar(input[0]);
 	else if (type == 'i')
