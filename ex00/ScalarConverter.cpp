@@ -12,6 +12,22 @@
 
 #include "ScalarConverter.hpp"
 
+ScalarConverter::ScalarConverter() {}
+
+ScalarConverter::ScalarConverter(ScalarConverter const &src)
+{
+	(void)src;
+}
+
+ScalarConverter &ScalarConverter::operator=(ScalarConverter const &src) 
+{
+	(void)src;
+	return (*this);
+}
+
+ScalarConverter::~ScalarConverter() {}
+
+
 static bool checkSpecial(std::string const &input)
 {
 	if (!(input == "-inff" || input == "+inff" || input == "-inf" || input == "+inf" || input == "nan" || input == "nanf"))
