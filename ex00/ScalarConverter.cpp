@@ -46,7 +46,7 @@ static bool checkInt(std::string const &input)
 			return (false);
 		}
 	}
-	if (std::atol(input.c_str()) > INT_MAX || std::atol(input.c_str()) < INT_MIN)
+	if (std::atol(input.c_str()) > INT_MAX || std::atol(input.c_str()) < INT_MIN || input == "-")
 		return (false);
 	return (true);
 }
@@ -54,38 +54,53 @@ static bool checkInt(std::string const &input)
 static bool checkDouble(std::string const &input)
 {
 	char *tmpPtr;
+	bool checkDot = false;
 	for (std::string::const_iterator it = input.begin(); it != input.end(); it++)
 	{
 		if (!std::isdigit(*it))
 		{
 			if (*it == '-' && it == input.begin())
 				continue;
-			else if (*it == '.' && it != input.begin() && *it != input[input.size()-1] && std::strtod(input.c_str(), &tmpPtr) != 0)
+			else if (*it == '.' && it != input.begin() && *it != input[input.size()-1] && !checkDot)
+			{
+				checkDot = true;
 				continue;
+			}
 			else
 				return (false);
 		}
 	}
+
+	std::cout << std::strtod(input.c_str(), &tmpPtr) << std::endl;
+	if (input == "-")
+		return (false);
 	return (true);
 }
 
 static bool checkFloat(std::string const &input)
 {
 	char *tmpPtr;
+	bool checkDot = false;
 	for (std::string::const_iterator it = input.begin(); it != input.end(); it++)
 	{
 		if (!std::isdigit(*it))
 		{
 			if (*it == '-' && it == input.begin())
 				continue;
-			else if (*it == '.' && it != input.begin() && *it != input[input.size()-1] && std::strtod(input.c_str(), &tmpPtr) != 0)
+			else if (*it == '.' && it != input.begin() && *it != input[input.size()-1] && !checkDot)
+			{
+				checkDot = true;
 				continue;
+			}
 			else if (*it == 'f' && *it == input[input.size()-1])
 				continue;
 			else
 				return (false);
 		}
 	}
+	std::cout << std::strtod(input.c_str(), &tmpPtr) << std::endl;
+	if (input == "-")
+		return (false);
 	return (true);
 }
 
@@ -160,7 +175,7 @@ static void isDouble(double input)
 	else
 		std::cout << "Char: Non displayable"<<std::endl;
 	std::cout << "Int: " << static_cast<int>(input) << std::endl;
-		if (std::floor(input) != input)
+	if (std::floor(input) != input)
 	{
 		std::cout << "Float: " << static_cast<double>(input) << "f" << std::endl;
 		std::cout << "Double: " << input << std::endl;
