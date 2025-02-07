@@ -61,7 +61,7 @@ static bool checkDouble(std::string const &input)
 		{
 			if (*it == '-' && it == input.begin())
 				continue;
-			else if (*it == '.' && it != input.begin() && *it != input[input.size()-1] && !checkDot)
+			else if (*it == '.' && it != input.begin() && it != (input.end() - 1) && !checkDot)
 			{
 				checkDot = true;
 				continue;
@@ -79,7 +79,6 @@ static bool checkDouble(std::string const &input)
 
 static bool checkFloat(std::string const &input)
 {
-	char *tmpPtr;
 	bool checkDot = false;
 	for (std::string::const_iterator it = input.begin(); it != input.end(); it++)
 	{
@@ -87,18 +86,17 @@ static bool checkFloat(std::string const &input)
 		{
 			if (*it == '-' && it == input.begin())
 				continue;
-			else if (*it == '.' && it != input.begin() && *it != input[input.size()-1] && !checkDot)
+			else if (*it == '.' && it != input.begin() && it != (input.end() - 1) && !checkDot)
 			{
 				checkDot = true;
 				continue;
 			}
-			else if (*it == 'f' && *it == input[input.size()-1])
+			else if (*it == 'f' && it == (input.end() - 1))
 				continue;
 			else
 				return (false);
 		}
 	}
-	std::cout << std::strtod(input.c_str(), &tmpPtr) << std::endl;
 	if (input == "-")
 		return (false);
 	return (true);
